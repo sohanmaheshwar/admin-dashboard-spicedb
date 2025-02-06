@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { User } from 'next-auth';
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
 import {
@@ -15,6 +16,8 @@ import { count, eq, ilike } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
 
 export const db = drizzle(neon(process.env.POSTGRES_URL!));
+
+
 
 export const statusEnum = pgEnum('status', ['active', 'inactive', 'archived']);
 

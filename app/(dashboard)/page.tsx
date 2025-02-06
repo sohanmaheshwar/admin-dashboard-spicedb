@@ -3,15 +3,27 @@ import { File, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductsTable } from './products-table';
 import { getProducts } from '@/lib/db';
+import { auth} from '@/lib/auth'; // Import NextAuth authentication
+import { redirect } from 'next/navigation';
 
 export default async function ProductsPage(
   props: {
     searchParams: Promise<{ q: string; offset: string }>;
   }
 ) {
+  // 🔐 Fetch session and check if user is admin
+  const session = await auth();
+  if (!session?.user || session.user.role !== 'admin') {
+    // return redirect('/'); // Redirect unauthorized users to home page
+    console.log('Unauthorized user');
+  }
+
+  // Get search params
   const searchParams = await props.searchParams;
   const search = searchParams.q ?? '';
   const offset = searchParams.offset ?? 0;
+
+  // Fetch products
   const { products, newOffset, totalProducts } = await getProducts(
     search,
     Number(offset)
